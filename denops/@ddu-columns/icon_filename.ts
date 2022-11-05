@@ -16,6 +16,7 @@ type Params = {
   defaultIcon: DefautIcon;
   linkIcon: linkIcons;
   useLinkIcon: "always" | "grayout" | "default" | "none";
+  defaultColor: string;
   customSpecialIcons: Record<string, IconData>;
   customFileIcons: Record<string, IconData>;
 };
@@ -146,6 +147,7 @@ export class Column extends BaseColumn<Params> {
       defaultIcon: { icon: " ", color: "Normal" },
       linkIcon: { icon: "", color: "#808080" },
       useLinkIcon: "always",
+      defaultColor: "Normal",
       customSpecialIcons: {},
       customFileIcons: {},
     };
@@ -180,6 +182,9 @@ export class Column extends BaseColumn<Params> {
 
     const sp = this.specialIcons.get(fname.toLowerCase());
     if (sp) {
+      if (sp.color == colors.default) {
+        sp.color = params.defaultColor;
+      }
       if (isLink && params.useLinkIcon == "grayout") {
         sp.hl_group = linkIcon.hl_group;
         sp.color = linkIcon.color;
@@ -194,6 +199,9 @@ export class Column extends BaseColumn<Params> {
     const extention = extname(fname).substring(1);
     const file = this.fileIcons.get(extention);
     if (file) {
+      if (file.color == colors.default) {
+        file.color = params.defaultColor;
+      }
       if (isLink && params.useLinkIcon == "grayout") {
         file.hl_group = linkIcon.hl_group;
         file.color = linkIcon.color;
@@ -204,7 +212,7 @@ export class Column extends BaseColumn<Params> {
     if (isLink && params.useLinkIcon != "none") return linkIcon;
 
     const defoIcon = params.defaultIcon.icon ?? " ";
-    const defoColor = params.defaultIcon.color ?? "Normal";
+    const defoColor = params.defaultIcon.color ?? params.defaultColor;
     return {
       icon: defoIcon,
       hl_group: "file_default",
